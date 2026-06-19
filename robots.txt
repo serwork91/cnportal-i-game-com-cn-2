@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://serwork91.github.io/cnportal-i-game-com-cn-2/sitemap.xml
