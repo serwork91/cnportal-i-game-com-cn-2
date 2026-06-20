@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛事导航 · NBA直播知识库</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fff3e0 0%, #fbe9d2 40%, #f5d7b8 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .wrapper {
+            max-width: 1120px;
+            width: 100%;
+        }
+
+        /* 页面头部 —— 目录风格标题 */
+        .page-header {
+            margin-bottom: 2.5rem;
+            text-align: left;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed #dba77b;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #673f1b;
+            letter-spacing: 1px;
+        }
+
+        .page-header .subhead {
+            font-size: 1rem;
+            color: #7f5b3c;
+            margin-top: 0.3rem;
+            font-weight: 400;
+            background: rgba(255, 245, 235, 0.5);
+            display: inline-block;
+            padding: 0.2rem 1rem 0.2rem 0;
+        }
+
+        /* 卡片网格 —— 目录感布局 */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .card {
+            background: #fffffffa;
+            backdrop-filter: blur(2px);
+            border-radius: 20px;
+            padding: 1.8rem 1.5rem;
+            box-shadow: 0 8px 20px rgba(120, 70, 30, 0.08), 0 2px 6px rgba(90, 55, 25, 0.04);
+            transition: transform 0.15s ease, box-shadow 0.2s;
+            border: 1px solid #f1dfce;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(140, 85, 40, 0.12);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #4e301b;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .card h3 i {
+            font-style: normal;
+            background: #dba77b30;
+            padding: 0 0.4rem;
+            border-radius: 30px;
+            font-size: 1rem;
+        }
+
+        .card p, .card li {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #3f2e1f;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0.2rem;
+        }
+
+        .card ul li {
+            padding: 0.25rem 0 0.25rem 1.2rem;
+            position: relative;
+        }
+
+        .card ul li::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            color: #b67f56;
+            font-weight: 700;
+        }
+
+        /* 全宽卡片 / 说明区 / 提示区 */
+        .full-card {
+            background: #fffffffa;
+            border-radius: 20px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 18px rgba(100, 60, 20, 0.06);
+            border: 1px solid #efdccb;
+        }
+
+        .full-card h2 {
+            font-size: 1.5rem;
+            font-weight: 550;
+            color: #4a2f1c;
+            margin-bottom: 0.75rem;
+            border-left: 5px solid #c69362;
+            padding-left: 0.9rem;
+        }
+
+        .full-card p {
+            line-height: 1.7;
+            color: #3f2d1e;
+            margin-bottom: 0.7rem;
+        }
+
+        .full-card a, .card a {
+            color: #915f38;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px dotted #cba17b;
+            transition: border 0.15s;
+        }
+
+        .full-card a:hover, .card a:hover {
+            border-bottom: 2px solid #7f532f;
+            color: #6d4226;
+        }
+
+        /* 圆角按钮感链接 (用于信息区内的引导) */
+        .link-button {
+            display: inline-block;
+            background: #dba77b20;
+            border: 1px solid #dba77b50;
+            border-radius: 40px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #593d26;
+            transition: all 0.2s;
+            text-decoration: none;
+            margin: 0.2rem 0.3rem 0.2rem 0;
+        }
+
+        .link-button:hover {
+            background: #dba77b40;
+            border-color: #b67f56;
+            transform: scale(1.02);
+        }
+
+        .faq-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eddccc;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 550;
+            color: #4e311c;
+        }
+
+        .faq-answer {
+            color: #4f3a28;
+            margin-top: 0.2rem;
+            padding-left: 0.5rem;
+        }
+
+        /* 相关信息区 —— 目录入口块 */
+        .info-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 2rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .info-category {
+            background: #f7ede3;
+            border-radius: 40px;
+            padding: 0.3rem 1.2rem 0.3rem 1rem;
+            font-size: 0.9rem;
+            color: #553b27;
+        }
+
+        /* 底部 */
+        .footer-note {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7a5d46;
+            border-top: 1px solid #e4cfbc;
+            padding-top: 1.2rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 700px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .full-card {
+                padding: 1.2rem 1.2rem;
+            }
+
+            .card {
+                padding: 1.2rem;
+            }
+
+            .info-links {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+        }
+
+        @media (max-width: 450px) {
+            body {
+                padding: 1rem 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <!-- 头部 / 知识库目录标题 -->
+    <header class="page-header">
+        <h1>📖 赛事知识库 · 稳定入口</h1>
+        <div class="subhead">导航 | 说明 | 常见问题 · 围绕 <a href="https://cctv-ds.com" style="border-bottom: 1px solid #b67f56; text-decoration: none; font-weight:600;">NBA直播</a> 整理</div>
+    </header>
+
+    <!-- 两列卡片：说明区 + 特点/提示区 -->
+    <div class="grid-2col">
+        <!-- 卡片1：说明区 —— 知识库入口说明 -->
+        <div class="card">
+            <h3>📌 关于这个页面</h3>
+            <p>这里不是直接播放页面，而是一个围绕 <a href="https://cctv-ds.com">NBA直播</a> 整理的轻量知识索引。你可以把它看作一个目录式的说明站，用于了解赛事观看的常见背景、环境特点以及相关提示。</p>
+            <p style="margin-top: 0.6rem;">我们推荐将本页收藏，作为日后访问的稳定参考入口。内容保持客观，不夸大，只陈述经过整理的信息。</p>
+        </div>
+
+        <!-- 卡片2：特点区 —— 温和描述观看特点 -->
+        <div class="card">
+            <h3>⚙️ 特点与场景</h3>
+            <ul>
+                <li>赛季期间，赛事场次集中，适合提前了解节奏。</li>
+                <li>多平台信号源各有差异，可对照了解。</li>
+                <li>常规赛、季后赛、附加赛时间窗口不同，可留意。</li>
+                <li>部分场次提供多语言解说选项（视资源而定）。</li>
+                <li>网络环境与设备兼容性会影响体验，建议提前测试。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 全宽卡片：提示区 + 稳定入口建议 -->
+    <div class="full-card">
+        <h2>🧭 提示区 · 关于稳定访问</h2>
+        <p>如果你正在寻找 <a href="https://cctv-ds.com">NBA直播</a> 的日常观看方式，这里提供几个温和提醒：</p>
+        <ul style="list-style: none; padding-left: 0.2rem; margin: 0.5rem 0 0.8rem;">
+            <li style="padding: 0.2rem 0;">→ 建议通过书签或固定入口访问，减少每次搜索的麻烦。</li>
+            <li style="padding: 0.2rem 0;">→ 尽量使用主流浏览器并保持更新，兼容性更好。</li>
+            <li style="padding: 0.2rem 0;">→ 观看高峰时段（比如周末热门场次）可能出现排队或缓冲，可错峰或提前进入。</li>
+            <li style="padding: 0.2rem 0;">→ 留意时区转换，东部与北京时间通常相差13小时（夏令时12小时）。</li>
+        </ul>
+        <p style="margin-bottom: 0.2rem;">💡 如果你暂时不了解如何选择，可以把 <a href="https://cctv-ds.com">NBA直播</a> 这个站点当作一个常备参考，结合自身网络情况再做判断。</p>
+    </div>
+
+    <!-- 相关信息区 + FAQ 摘要 -->
+    <div class="full-card" style="margin-bottom: 1.5rem;">
+        <h2>📋 相关信息 · FAQ 摘要</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">❓ 这个页面是官方站点吗？</div>
+            <div class="faq-answer">不是。这里是独立整理的介绍页，主要用于提供背景信息和入口说明。<a href="https://cctv-ds.com">NBA直播</a> 的链接作为已知站点被收录在参考中。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">❓ 为什么强调“稳定入口”？</div>
+            <div class="faq-answer">赛事类资源有时会变更地址或域名，一个固定的说明页可以帮助你记住原始参考，并了解可能的替代思路。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">❓ 这里提供播放器或软件下载吗？</div>
+            <div class="faq-answer">不提供。本页面只做知识索引和提示，不包含任何下载或可执行内容。</div>
+        </div>
+
+        <!-- 用圆角按钮感链接展示相关信息类别（目录感） -->
+        <div class="info-links">
+            <span class="info-category">🏀 赛事常识</span>
+            <span class="info-category">📅 赛季时间线</span>
+            <span class="info-category">🌐 网络参考</span>
+            <span class="info-category">📺 设备兼容</span>
+        </div>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem; color: #5f4a38;">以上分类仅作示意，你可以根据自己需求扩展笔记。</p>
+    </div>
+
+    <!-- 额外一个温柔引导卡片：嵌入链接自然 -->
+    <div style="background: #fffffffa; border-radius: 20px; padding: 1.5rem 1.8rem; border: 1px solid #eedbc8; margin-top: 0.5rem;">
+        <p style="font-size: 0.98rem; color: #3c2b1d;">如果你经常关注赛事，不妨把 <a href="https://cctv-ds.com">NBA直播</a> 记在常用书签栏。本知识库页面也会保持更新说明，方便你快速回顾一些观看前的小要点。</p>
+        <p style="margin-top: 0.6rem; color: #5e4532;">温和提醒：任何在线观看都建议留意版权与当地法规，选择正规渠道。</p>
+    </div>
+
+    <!-- footer -->
+    <div class="footer-note">
+        知识库入口式介绍 · 内容仅供参考 · 非官方页面
+    </div>
+</div>
+</body>
+</html>
